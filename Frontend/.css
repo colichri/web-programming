@@ -1,0 +1,50 @@
+/* FILEPATH: /c:/Users/danie/Documents/Notenrechner/web-programming/Frontend/style.css */
+
+/* Reset default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Set default font family and size */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+
+/* Set a max width for the content */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Style headings */
+h1, h2, h3 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Style links */
+a {
+    color: blue;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Style buttons */
+button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkblue;
+}

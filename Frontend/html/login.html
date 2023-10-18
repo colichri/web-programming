@@ -1,0 +1,53 @@
+<!-- FILEPATH: /c:/Users/danie/Documents/Notenrechner/web-programming/Frontend/html/login.html -->
+
+<!-- Man kann auch Bootstrap nutzen mit Presets für das Frontend-->
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>Login</title>
+        <script>
+            function validate() {
+                // Get input values
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+
+                // Define JSON object with valid credentials
+                var validCredentials = {
+                    "username": "myusername",
+                    "password": "mypassword"
+                };
+
+                // Check if input values match valid credentials
+                if (username === validCredentials.username && password === validCredentials.password) {
+                    alert("Login successful!");
+                } else {
+                    alert("Invalid username or password.");
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <header>
+            <hr>
+            <table>
+                <tr>
+                    <td><a href="Homepage.html">Homepage</a></td>
+                    <td><a href="uebersicht-noten.html">Übersicht meiner Noten</a></td>
+                    <td><a href="login.html">Login</a></td>
+                    <td><a href="Impressum.html">Impressum</a></td>
+                </tr>
+            </table>
+            <hr>
+        </header>
+
+        <h1>Login</h1>
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"><br><br>
+            <input type="button" value="Submit" onclick="validate()">
+        </form>
+    </body>
+</html>

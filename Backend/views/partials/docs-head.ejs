@@ -1,0 +1,56 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="<%= description %>" />
+  <link rel="icon" type="image/png" href="/static/fav.png" />
+  <link
+    rel="preload"
+    href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+    rel="preload"
+    href="/static/highlight.js/railscasts.min.css"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
+
+  <noscript>
+    <link
+      href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/highlight.js/railscasts.min.css" />
+  </noscript>
+
+  <link href="/static/css/common.css" rel="stylesheet" />
+  <link href="/static/css/docs.css" rel="stylesheet" />
+
+  <script src="/static/highlight.js/highlight.min.js"></script>
+  <% if (typeof(googleTagId) !== "undefined") { %>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=<%= googleTagId %>"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', '<%= googleTagId %>');
+  </script>
+  <% } %>
+
+  <script defer src="/static/js/docs.js"></script>
+  <script defer src="/static/js/common.js"></script>
+
+  <title>
+    <%= page ? page.toUpperCase() + ` - Dummy REST API of JSON data for
+    development` : 'Docs - Fake REST API of JSON data | DummyJSON' %>
+  </title>
+</head>

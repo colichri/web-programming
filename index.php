@@ -1,1 +1,0 @@
-<?php header( 'Location: /Frontend/Homepage.html' ) ; ?>

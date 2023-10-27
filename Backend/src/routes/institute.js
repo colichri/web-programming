@@ -3,11 +3,29 @@ const express = require('express');
 const router = express.Router();
 
 // GET method to add institutes
-router.get('/add', (req, res) => {
-    res.send('Add an institute');
-});
+const addNewInstitute = async (req, res) => {
+try{
+    const importtest = fs.readFileSync('./user.json'); //Später durch die Datenbank ersetzen
+    const data = JSON.parse(importtest);
+    const newdata =
+    {
+      id: req.body.id,
+      name: req.body.name,
+      password: req.body.password,
+      adress: req.body.adress,
+    }
+    }catch(e){
+      console.log(e);
+    }
+  };
+
+router
+  .route('/api/v1/addNewInstitute')
+  .post(addNewInstitute);
 
 module.exports = router;
+
+
 
 
 

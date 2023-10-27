@@ -10,7 +10,6 @@ const addNewInstitute = async (req, res) => {
         const data = JSON.parse(importtest);
         const newdata =
         {
-            id: req.body.id,
             name: req.body.name,
             password: req.body.password,
             adress: req.body.adress,

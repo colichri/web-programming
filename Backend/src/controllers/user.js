@@ -1,84 +1,10 @@
 const { verifyUserHandler } = require('../helpers');
 const {
   dataInMemory: frozenData,
-  getMultiObjectSubset,
   getObjectSubset,
-  getNestedValue,
-  limitArray,
 } = require('../utils/util');
 
 const controller = {};
-
-// get all users
-controller.getAllUsers = ({ limit, skip, select }) => {
-  let [...users] = frozenData.users;
-  const total = users.length;
-
-  if (skip > 0) {
-    users = users.slice(skip);
-  }
-
-  users = limitArray(users, limit);
-
-  if (select) {
-    users = getMultiObjectSubset(users, select);
-  }
-
-  const result = { users, total, skip, limit: users.length };
-
-  return result;
-};
-
-// search users
-controller.searchUsers = ({ limit, skip, select, q: searchQuery }) => {
-  let [...users] = frozenData.users.filter(u => {
-    return (
-      u.firstName.toLowerCase().includes(searchQuery) ||
-      u.lastName.toLowerCase().includes(searchQuery) ||
-      u.email.toLowerCase().includes(searchQuery) ||
-      u.username.toLowerCase().includes(searchQuery)
-    );
-  });
-  const total = users.length;
-
-  if (skip > 0) {
-    users = users.slice(skip);
-  }
-
-  users = limitArray(users, limit);
-
-  if (select) {
-    users = getMultiObjectSubset(users, select);
-  }
-
-  const result = { users, total, skip, limit: users.length };
-
-  return result;
-};
-
-// filter users
-controller.filterUsers = ({ limit, skip, select, key, value }) => {
-  let [...users] = frozenData.users.filter(u => {
-    const val = getNestedValue(u, key);
-    return val && val.toString() === value;
-  });
-
-  const total = users.length;
-
-  if (skip > 0) {
-    users = users.slice(skip);
-  }
-
-  users = limitArray(users, limit);
-
-  if (select) {
-    users = getMultiObjectSubset(users, select);
-  }
-
-  const result = { users, total, skip, limit: users.length };
-
-  return result;
-};
 
 // get user by id
 controller.getUserById = ({ id, select }) => {
@@ -118,7 +44,6 @@ controller.addNewUser = ({ ...data }) => {
     email,
     username,
     password,
-    domain,
     ip,
     address,
   };

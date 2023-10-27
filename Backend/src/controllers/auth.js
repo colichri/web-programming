@@ -1,7 +1,3 @@
-const APIError = require('../utils/error');
-const { generateToken } = require('../utils/jwt');
-const { dataInMemory: frozenData } = require('../utils/util');
-
 const controller = {};
 
 // login user by username and password

@@ -2,7 +2,7 @@ const e = require('express');
 const express = require('express');
 const router = express.Router();
 
-// GET method to add institutes
+// POST method to add institutes
 const addNewInstitute = async (req, res) => {
 try{
     const importtest = fs.readFileSync('./user.json'); //Später durch die Datenbank ersetzen

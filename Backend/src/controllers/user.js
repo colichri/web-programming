@@ -26,7 +26,6 @@ controller.addNewUser = ({ ...data }) => {
     email = '',
     username = '',
     password = '',
-    ip = '',
     address = {
       address: '',
       city: '',
@@ -44,7 +43,6 @@ controller.addNewUser = ({ ...data }) => {
     email,
     username,
     password,
-    ip,
     address,
   };
 
@@ -60,7 +58,6 @@ controller.updateUserById = ({ id, ...data }) => {
     email = '',
     username = '',
     password = '',
-    ip = '',
     address = {
       address: '',
       city: '',
@@ -80,7 +77,6 @@ controller.updateUserById = ({ id, ...data }) => {
     email: email || user.email,
     username: username || user.username,
     password: password || user.password,
-    ip: ip || user.ip,
     address: address || user.address,
   };
 

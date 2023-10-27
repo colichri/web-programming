@@ -19,7 +19,6 @@ const addNewUser = async (req, res) => {
   const data = JSON.parse(importtest);
   const newdata =
   {
-    id: req.body.id,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
@@ -47,7 +46,6 @@ const updateUser = async (req, res) => {
       throw err;
     }
     const newStatsData = {
-      id: req.body.id,
       wins: req.body.wins,
       losses: req.body.losses,
       points_scored: req.body.points_scored,

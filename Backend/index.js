@@ -17,8 +17,3 @@ app.use('/auth/', authUser, routes);
 app.get('*', (req, res) => {
   res.status(404).send('not found!');
 });
-
-// start listening
-app.listen(PORT, () => {
-  console.info(`[Node][${NODE_ENV}] App v${version} running on PORT ${PORT}`);
-});

@@ -25,10 +25,6 @@ controller.loginByUsernamePassword = async data => {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    gender: user.gender,
-    image: user.image,
-    country: user.country,
-    city: user.city,
   };
 
   try {

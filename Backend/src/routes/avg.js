@@ -14,13 +14,13 @@ router.route('/average')
     .get(async (req, res) => {
         try {
             const client = await pool.connect();
-            const result = await client.query('SELECT * FROM numbers');
-            const numbers = result.rows.map(row => row.number);
-            if (!numbers || !Array.isArray(numbers)) {
+            const result = await client.query('SELECT * FROM grades');
+            const grades = result.rows.map(row => row.grades);
+            if (!grades || !Array.isArray(grades)) {
                 return res.status(400).json({ error: 'Invalid input' });
             }
-            const sum = numbers.reduce((acc, curr) => acc + curr, 0);
-            const avg = sum / numbers.length;
+            const sum = grades.reduce((acc, curr) => acc + curr, 0);
+            const avg = sum / grades.length;
             return res.json({ average: avg });
         } catch (err) {
             console.error(err);

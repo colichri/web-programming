@@ -1,8 +1,5 @@
-module.exports = router;
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -14,7 +11,7 @@ const pool = new Pool({
 });
 
 // POST method to add institutes
-const addNewInstitute = async (req, res) => {
+router.post('/api/v1/addNewInstitute', async (req, res) => {
     try {
         const { name, password, address } = req.body;
         const query = 'INSERT INTO institutes (name, password, address) VALUES ($1, $2, $3) RETURNING *';
@@ -25,10 +22,10 @@ const addNewInstitute = async (req, res) => {
         console.log(e);
         res.status(500).send('Server error');
     }
-};
+});
 
 // GET method to get institute by id
-const getInstituteById = async (req, res) => {
+router.get('/api/v1/institute/:id', async (req, res) => {
     try {
         const query = 'SELECT * FROM institutes WHERE id = $1';
         const values = [req.params.id];
@@ -41,10 +38,10 @@ const getInstituteById = async (req, res) => {
         console.log(e);
         res.status(500).send('Server error');
     }
-};
+});
 
 //PUT method to update institute by id
-const updateInstituteById = async (req, res) => {
+router.put('/api/v1/institute/:id', async (req, res) => {
     try {
         const { name, password, address } = req.body;
         const id = req.params.id;
@@ -57,17 +54,7 @@ const updateInstituteById = async (req, res) => {
         console.log(e);
         res.status(500).send('Server error');
     }
-};
-
-
-
-router
-    .route('/api/v1/addNewInstitute')
-    .post(addNewInstitute);
-
-router
-    .route('/api/v1/institute/:id')
-    .get(getInstituteById);
+});
 
 module.exports = router;
 

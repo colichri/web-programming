@@ -12,78 +12,73 @@ const pool = new Pool({
 });
 
 // GET user by id
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { select } = req._options;
+router.route('/:id')
+  .get(async (req, res) => {
+    const { id } = req.params;
+    const { select } = req._options;
 
-  try {
-    const query = 'SELECT * FROM users WHERE id = $1';
-    const values = [id];
-    const result = await pool.query(query, values);
-    res.send(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error retrieving user from database');
-  }
-});
+    try {
+      const query = 'SELECT * FROM users WHERE id = $1';
+      const values = [id];
+      const result = await pool.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving user from database');
+    }
+  })
+  .put(async (req, res) => {
+    const { id } = req.params;
+    const { firstname, lastname, email, password, address } = req.body;
 
-// POST new user
-router.post('/', async (req, res) => {
-  const { firstname, lastname, email, password, address } = req.body;
+    try {
+      const query = 'UPDATE users SET firstname = $1, lastname = $2, email = $3, password = $4, address = $5 WHERE id = $6 RETURNING *';
+      const values = [firstname, lastname, email, password, address, id];
+      const result = await pool.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error updating user in database');
+    }
+  })
+  .delete(async (req, res) => {
+    const { id } = req.params;
 
-  try {
-    const query = 'INSERT INTO users (firstname, lastname, email, password, address) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-    const values = [firstname, lastname, email, password, address];
-    const result = await pool.query(query, values);
-    res.send(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error adding user to database');
-  }
-});
+    try {
+      const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
+      const values = [id];
+      const result = await pool.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error deleting user from database');
+    }
+  });
 
-// PUT user by id
-router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { firstname, lastname, email, password, address } = req.body;
+router.route('/')
+  .get(async (req, res) => {
+    try {
+      const query = 'SELECT * FROM users';
+      const result = await pool.query(query);
+      res.send(result.rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving users from database');
+    }
+  })
+  .post(async (req, res) => {
+    const { firstname, lastname, email, password, address } = req.body;
 
-  try {
-    const query = 'UPDATE users SET firstname = $1, lastname = $2, email = $3, password = $4, address = $5 WHERE id = $6 RETURNING *';
-    const values = [firstname, lastname, email, password, address, id];
-    const result = await pool.query(query, values);
-    res.send(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error updating user in database');
-  }
-});
-
-// DELETE user by id
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
-    const values = [id];
-    const result = await pool.query(query, values);
-    res.send(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error deleting user from database');
-  }
-});
-
-// GET all users
-router.get('/', async (req, res) => {
-  try {
-    const query = 'SELECT * FROM users';
-    const result = await pool.query(query);
-    res.send(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error retrieving users from database');
-  }
-});
+    try {
+      const query = 'INSERT INTO users (firstname, lastname, email, password, address) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+      const values = [firstname, lastname, email, password, address];
+      const result = await pool.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error adding user to database');
+    }
+  });
 
 module.exports = router;
 

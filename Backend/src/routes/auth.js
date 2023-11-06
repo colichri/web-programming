@@ -12,32 +12,33 @@ const pool = new Pool({
 });
 
 // login user
-router.post('/login', async (req, res, next) => {
-  try {
-    const { username = '', password = '' } = req.body;
-    const { expiresInMins = 60 } = req.body;
+router.route('/login')
+  .post(async (req, res, next) => {
+    try {
+      const { username = '', password = '' } = req.body;
+      const { expiresInMins = 60 } = req.body;
 
-    // Query the database for the user's login information
-    const { rows } = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
+      // Query the database for the user's login information
+      const { rows } = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
 
-    // If the user is not found, return an error
-    if (rows.length === 0) {
-      return res.status(401).send('Invalid username or password');
+      // If the user is not found, return an error
+      if (rows.length === 0) {
+        return res.status(401).send('Invalid username or password');
+      }
+
+      // Otherwise, create a payload with the user's information
+      const payload = {
+        id: rows[0].id,
+        username: rows[0].username,
+        expiresIn: new Date(Date.now() + expiresInMins * 60000),
+      };
+
+      // Return the payload
+      res.send(payload);
+    } catch (error) {
+      next(error);
     }
-
-    // Otherwise, create a payload with the user's information
-    const payload = {
-      id: rows[0].id,
-      username: rows[0].username,
-      expiresIn: new Date(Date.now() + expiresInMins * 60000),
-    };
-
-    // Return the payload
-    res.send(payload);
-  } catch (error) {
-    next(error);
-  }
-});
+  });
 
 module.exports = router;
 

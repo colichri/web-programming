@@ -40,5 +40,31 @@ router.route('/login')
     }
   });
 
+  // register user
+  router.route('/register')
+    .post(async (req, res, next) => {
+      try {
+        const { username = '', password = '' } = req.body;
+
+        // Check if the user already exists
+        const { rows } = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+
+        // If the user already exists, return an error
+        if (rows.length > 0) {
+          return res.status(409).send('User already exists');
+        }
+
+        // Otherwise, insert the new user into the database
+        await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password]);
+
+        // Return a success message
+        res.send('User registered successfully');
+      } catch (error) {
+        next(error);
+      }
+    });
+
+
+
 module.exports = router;
 

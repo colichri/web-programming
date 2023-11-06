@@ -1,72 +1,88 @@
-const e = require('express');
 const express = require('express');
+const { Pool } = require('pg');
 const router = express.Router();
 
-module.exports = router;
+// Connect to PostgreSQL database
+const pool = new Pool({
+  user: 'your_username',
+  host: 'your_host',
+  database: 'your_database',
+  password: 'your_password',
+  port: 5432, // default port for PostgreSQL
+});
 
-// get user by id
-router.get('/:id', (req, res) => {
+// GET user by id
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const { select } = req._options;
 
-  res.send(getUserById({ id, select }));
+  try {
+    const query = 'SELECT * FROM users WHERE id = $1';
+    const values = [id];
+    const result = await pool.query(query, values);
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error retrieving user from database');
+  }
 });
 
-// add new user POST
-const addNewUser = async (req, res) => {
-  try{
-  const importtest = fs.readFileSync('./user.json'); //Später durch die Datenbank ersetzen
-  const data = JSON.parse(importtest);
-  const newdata =
-  {
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    email: req.body.email,
-    password: req.body.password,
-    adress: req.body.adress,
-  }
-  }catch(e){
-    console.log(e);
-  }
-};
+// POST new user
+router.post('/', async (req, res) => {
+  const { firstname, lastname, email, password, address } = req.body;
 
-router
-  .route('/api/v1/addNewUser')
-  .post(addNewUser);
-
-// update user by id (PUT)
-const updateUser = async (req, res) => {
   try {
-    const importtest = fs.readFileSync('./user.json'); //Später durch die Datenbank ersetzen
-    const data = JSON.parse(importtest);
-    const userdata = data.find(player => player.id === Number(req.params.id));
-    if (!playerStats) {
-      const err = new Error('Player stats not found');
-      err.status = 404;
-      throw err;
-    }
-    const newStatsData = {
-      wins: req.body.wins,
-      losses: req.body.losses,
-      points_scored: req.body.points_scored,
-    };
-    const newStats = stats.map(player => {
-      if (player.id === Number(req.params.id)) {
-        return newStatsData;
-      } else {
-        return player;
-      }
-    });
-    fs.writeFileSync(statsFilePath, JSON.stringify(newStats));
-    res.status(200).json(newStatsData);
-  } catch (e) {
-    console.error(e);
+    const query = 'INSERT INTO users (firstname, lastname, email, password, address) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+    const values = [firstname, lastname, email, password, address];
+    const result = await pool.query(query, values);
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error adding user to database');
   }
-};
+});
 
-// delete user by id
-router.delete('/:id', (req, res) => {
-  res.send(deleteUserById({ ...req.params }));
+// PUT user by id
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { firstname, lastname, email, password, address } = req.body;
+
+  try {
+    const query = 'UPDATE users SET firstname = $1, lastname = $2, email = $3, password = $4, address = $5 WHERE id = $6 RETURNING *';
+    const values = [firstname, lastname, email, password, address, id];
+    const result = await pool.query(query, values);
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error updating user in database');
+  }
+});
+
+// DELETE user by id
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
+    const values = [id];
+    const result = await pool.query(query, values);
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting user from database');
+  }
+});
+
+// GET all users
+router.get('/', async (req, res) => {
+  try {
+    const query = 'SELECT * FROM users';
+    const result = await pool.query(query);
+    res.send(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error retrieving users from database');
+  }
 });
 
 module.exports = router;

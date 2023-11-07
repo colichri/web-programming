@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 
 // login user
 router.route('/')
-  .post(async (req, res, next) => {
+  .post(bodyParser.json(),async (req, res, next) => {
     try {
       const { email = '', password = '' } = req.body;
       const { expiresInMins = 60 } = req.body;
@@ -49,7 +49,7 @@ router.route('/')
 
   // register user
   router.route('/register')
-    .post(async (req, res, next) => {
+    .post(bodyParser.json(),async (req, res, next) => {
       try {
         const { email = '',username = '', password = '' } = req.body;
 

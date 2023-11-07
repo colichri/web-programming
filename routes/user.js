@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 // Connect to PostgreSQL database
 const pool = new Pool({
   user: 'miacqskbeyafwb',
-  host: '    ec2-34-242-199-141.eu-west-1.compute.amazonaws.com',
+  host: 'ec2-34-242-199-141.eu-west-1.compute.amazonaws.com',
   database: 'd967mmgnsklhd0',
   password: 'd7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4',
   port: 5432, // default port for PostgreSQL
@@ -29,13 +29,13 @@ router.route('/:id')
       res.status(500).send('Error retrieving user from database');
     }
   })
-  .put(async (req, res) => {
+  .put(bodyParser.json(),async (req, res) => {
     const { id } = req.params;
-    const { firstname, lastname, email, password, address } = req.body;
+    const {email, username, password,} = req.body;
 
     try {
-      const query = 'UPDATE users SET firstname = $1, lastname = $2, email = $3, password = $4, address = $5 WHERE id = $6 RETURNING *';
-      const values = [firstname, lastname, email, password, address, id];
+      const query = 'UPDATE users SET email = $1, username = $2, password = $3,WHERE id = $4 RETURNING *';
+      const values = [email, password,username, address, id];
       const result = await pool.query(query, values);
       res.send(result.rows[0]);
     } catch (err) {
@@ -43,7 +43,7 @@ router.route('/:id')
       res.status(500).send('Error updating user in database');
     }
   })
-  .delete(async (req, res) => {
+  .delete(bodyParser.json(),async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -69,15 +69,15 @@ router.route('/')
     }
   })
   .post(bodyParser.json(),async (req, res) => {
-    const { firstname, lastname, email, password, address } = req.body || {};
+    const { username,  email, password} = req.body || {};
 
-    if (!firstname || !lastname || !email || !password || !address) {
+    if (!username || !email || !password) {
       return res.status(400).send('Missing required data');
     }
 
     try {
-      const query = 'INSERT INTO users (firstname, lastname, email, password, address) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-      const values = [firstname, lastname, email, password, address];
+      const query = 'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING *';
+      const values = [email, username, password];
       const result = await pool.query(query, values);
       res.send(result.rows[0]);
     } catch (err) {

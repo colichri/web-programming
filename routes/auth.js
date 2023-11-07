@@ -63,7 +63,7 @@ router.route('/')
         }
 
         // Otherwise, insert the new user into the database
-        await pool.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, password]);
+        await pool.query('INSERT INTO users (email, username, password) VALUES ($1, $2, $3)', [email, username, password]);
 
         // Return a success message
         res.send('User registered successfully');

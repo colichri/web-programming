@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 });
 
 // Define a POST endpoint to add a new grade to the database
-router.post('/', async (req, res) => {
+router.post('/',bodyParser.json(), async (req, res) => {
     try {
         // Get the grade from the request body
         const { grade } = req.body;
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 });
 
 // Define a PUT endpoint to update a grade in the database
-router.put('/:id', async (req, res) => {
+router.put('/:id',bodyParser.json(), async (req, res) => {
     try {
         // Get the ID and new grade from the request parameters and body
         const { id } = req.params;
@@ -62,7 +62,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 // Define a DELETE endpoint to delete a grade from the database
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',bodyParser.json(), async (req, res) => {
     try {
         // Get the ID of the grade to delete from the request parameters
         const { id } = req.params;

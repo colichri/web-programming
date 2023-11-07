@@ -13,6 +13,7 @@ const pool = new Pool({
   port: 5432, // or your PostgreSQL port
 });
 
+//Testing the connection
 router.get('/', (req, res) => {
   res.send('Get method klappt als routing');
 });
@@ -20,7 +21,7 @@ router.get('/', (req, res) => {
 
 // login user
 router.route('/')
-  .post(async (req, res, next) => {
+  .post(bodyParser.json(),async (req, res, next) => {
     try {
       const { email = '', password = '' } = req.body;
       const { expiresInMins = 60 } = req.body;
@@ -49,7 +50,7 @@ router.route('/')
 
   // register user
   router.route('/register')
-    .post(async (req, res, next) => {
+    .post(bodyParser.json(),async (req, res, next) => {
       try {
         const { email = '',username = '', password = '' } = req.body;
 
@@ -62,7 +63,7 @@ router.route('/')
         }
 
         // Otherwise, insert the new user into the database
-        await pool.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, password]);
+        await pool.query('INSERT INTO users (email, username, password) VALUES ($1, $2, $3)', [email, username, password]);
 
         // Return a success message
         res.send('User registered successfully');

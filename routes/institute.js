@@ -13,7 +13,7 @@ const pool = new Pool({
 });
 
 // POST method to add institutes
-router.post('/', async (req, res) => {
+router.post('/',bodyParser.json(), async (req, res) => {
     try {
         const { name, password, address } = req.body;
         const query = 'INSERT INTO institutes (name, password, address) VALUES ($1, $2, $3) RETURNING *';
@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
 });
 
 //PUT method to update institute by id
-router.put('/', async (req, res) => {
+router.put('/',bodyParser.json(), async (req, res) => {
     try {
         const { name, password, address } = req.body;
         const id = req.params.id;

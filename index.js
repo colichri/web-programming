@@ -3,6 +3,20 @@ const app = express();
 const path = require("path");
 const { Pool } = require("pg");
 
+const authRoute = require('./routes/auth');
+const avgRoute = require('./routes/avg');
+const gradesRoute = require('./routes/grades');
+const instituteRoute = require('./routes/institute');
+const userRoute = require('./routes/user');
+
+
+
+app.use('/auth', authRoute);
+app.use('/avg', avgRoute);
+app.use('/grades', gradesRoute);
+app.use('/institute', instituteRoute);
+app.use('/user', userRoute);
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -26,19 +40,7 @@ function showTimes() {
   return result;
 }
 
-const authRoute = require('./routes/auth');
-const avgRoute = require('./routes/avg');
-const gradesRoute = require('./routes/grades');
-const instituteRoute = require('./routes/institute');
-const userRoute = require('./routes/user');
 
-
-
-app.use('/auth', authRoute);
-app.use('/avg', avgRoute);
-app.use('/grades', gradesRoute);
-app.use('/institute', instituteRoute);
-app.use('/user', userRoute);
 
 
 app.get("/db", async (req, res) => {

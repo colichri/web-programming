@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-// const app = express();
+const app = express();
 const { Pool } = require('pg');
+const bodyParser = require('body-parser');
 
 const pool = new Pool({
     user: 'miacqskbeyafwb',

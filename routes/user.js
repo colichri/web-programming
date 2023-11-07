@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const { Pool } = require('pg');
 const router = express.Router();
+const bodyParser = require('body-parser');
 
 // Connect to PostgreSQL database
 const pool = new Pool({
@@ -67,8 +68,12 @@ router.route('/')
       res.status(500).send('Error retrieving users from database');
     }
   })
-  .post(async (req, res) => {
-    const { firstname, lastname, email, password, address } = req.body;
+  .post(bodyParser.json(),async (req, res) => {
+    const { firstname, lastname, email, password, address } = req.body || {};
+
+    if (!firstname || !lastname || !email || !password || !address) {
+      return res.status(400).send('Missing required data');
+    }
 
     try {
       const query = 'INSERT INTO users (firstname, lastname, email, password, address) VALUES ($1, $2, $3, $4, $5) RETURNING *';

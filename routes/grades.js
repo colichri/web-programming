@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const express = require('express');
 const router = express.Router();
 const app = express();
+const bodyParser = require('body-parser');
 
 // Create a new pool to connect to the database
 const pool = new Pool({

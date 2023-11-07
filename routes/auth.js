@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-// const app = express();
+const app = express();
 const { Pool } = require('pg');
+const bodyParser = require('body-parser');
 
 // Create a new connection pool
 const pool = new Pool({

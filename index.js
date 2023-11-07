@@ -26,9 +26,19 @@ function showTimes() {
   return result;
 }
 
-const routes = require('./routes');
+const authRoute = require('./routes/auth');
+const avgRoute = require('./routes/avg');
+const gradesRoute = require('./routes/grades');
+const instituteRoute = require('./routes/institute');
+const userRoute = require('./routes/user');
 
-app.use('/api', routes);
+
+
+app.use('/auth', authRoute);
+app.use('/avg', avgRoute);
+app.use('/grades', gradesRoute);
+app.use('/institute', instituteRoute);
+app.use('/user', userRoute);
 
 
 app.get("/db", async (req, res) => {

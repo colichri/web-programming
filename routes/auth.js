@@ -1,6 +1,6 @@
 const express = require('express');
-const app = express();
 const router = express.Router();
+// const app = express();
 const { Pool } = require('pg');
 
 // Create a new connection pool
@@ -13,7 +13,7 @@ const pool = new Pool({
 });
 
 // login user
-router.route('/login')
+router.route('/')
   .post(async (req, res, next) => {
     try {
       const { email = '', password = '' } = req.body;

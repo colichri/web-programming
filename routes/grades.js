@@ -1,8 +1,8 @@
 // Define a grades array to store the grades
 const { Pool } = require('pg');
-const app = express();
 const express = require('express');
 const router = express.Router();
+const app = express();
 
 // Create a new pool to connect to the database
 const pool = new Pool({

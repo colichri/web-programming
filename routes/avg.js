@@ -1,8 +1,8 @@
 const express = require('express');
-const app = express();
+const router = express.Router();
+// const app = express();
 const { Pool } = require('pg');
 
-const router = express.Router();
 const pool = new Pool({
     user: 'miacqskbeyafwb',
     host: '    ec2-34-242-199-141.eu-west-1.compute.amazonaws.com',
@@ -11,7 +11,7 @@ const pool = new Pool({
     port: 5432,
 });
 
-router.route('/average')
+router.route('/')
     .get(async (req, res) => {
         try {
             const client = await pool.connect();

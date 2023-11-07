@@ -12,7 +12,7 @@ const pool = new Pool({
 });
 
 // POST method to add institutes
-router.post('/api/v1/addNewInstitute', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { name, password, address } = req.body;
         const query = 'INSERT INTO institutes (name, password, address) VALUES ($1, $2, $3) RETURNING *';
@@ -26,7 +26,7 @@ router.post('/api/v1/addNewInstitute', async (req, res) => {
 });
 
 // GET method to get institute by id
-router.get('/api/v1/institute/:id', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const query = 'SELECT * FROM institutes WHERE id = $1';
         const values = [req.params.id];
@@ -42,7 +42,7 @@ router.get('/api/v1/institute/:id', async (req, res) => {
 });
 
 //PUT method to update institute by id
-router.put('/api/v1/institute/:id', async (req, res) => {
+router.put('/', async (req, res) => {
     try {
         const { name, password, address } = req.body;
         const id = req.params.id;

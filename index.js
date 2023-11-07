@@ -26,6 +26,11 @@ function showTimes() {
   return result;
 }
 
+const routes = require('./routes');
+
+app.use('/api', routes);
+
+
 app.get("/db", async (req, res) => {
   try {
     const client = await pool.connect();

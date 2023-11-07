@@ -1,5 +1,6 @@
 // Define a grades array to store the grades
 const { Pool } = require('pg');
+const app = express();
 const express = require('express');
 const router = express.Router();
 

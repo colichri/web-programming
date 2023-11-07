@@ -1,4 +1,5 @@
 const express = require('express');
+const app = express();
 const router = express.Router();
 const { Pool } = require('pg');
 
@@ -15,21 +16,21 @@ const pool = new Pool({
 router.route('/login')
   .post(async (req, res, next) => {
     try {
-      const { username = '', password = '' } = req.body;
+      const { email = '', password = '' } = req.body;
       const { expiresInMins = 60 } = req.body;
 
       // Query the database for the user's login information
-      const { rows } = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
+      const { rows } = await pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', [email, password]);
 
       // If the user is not found, return an error
       if (rows.length === 0) {
-        return res.status(401).send('Invalid username or password');
+        return res.status(401).send('Invalid email or password');
       }
 
       // Otherwise, create a payload with the user's information
       const payload = {
         id: rows[0].id,
-        username: rows[0].username,
+        email: rows[0].email,
         expiresIn: new Date(Date.now() + expiresInMins * 60000),
       };
 
@@ -44,10 +45,10 @@ router.route('/login')
   router.route('/register')
     .post(async (req, res, next) => {
       try {
-        const { username = '', password = '' } = req.body;
+        const { email = '',username = '', password = '' } = req.body;
 
         // Check if the user already exists
-        const { rows } = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
         // If the user already exists, return an error
         if (rows.length > 0) {
@@ -55,7 +56,7 @@ router.route('/login')
         }
 
         // Otherwise, insert the new user into the database
-        await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password]);
+        await pool.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, password]);
 
         // Return a success message
         res.send('User registered successfully');

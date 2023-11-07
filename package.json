@@ -1,18 +1,16 @@
 {
   "name": "web-programming",
   "version": "1.0.0",
-  "description": " ",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/express.js"
+    "start": "node app.js"
   },
-  "author": "",
-  "license": "ISC",
   "keywords": [],
+  "author": "colin.christ@lehre.mosbach.dhbw.de",
+  "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.20.2",
-    "express": "^4.18.2",
-    "morgan": "^1.10.0"
+    "express": "^4.18.2"
   }
 }

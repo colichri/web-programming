@@ -13,6 +13,7 @@ const pool = new Pool({
   port: 5432, // or your PostgreSQL port
 });
 
+//Testing the connection
 router.get('/', (req, res) => {
   res.send('Get method klappt als routing');
 });

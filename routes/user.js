@@ -76,7 +76,7 @@ router.route('/')
     }
 
     try {
-      const query = 'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING *';
+      const query = 'INSERT INTO users (email, username, password) VALUES ($2, $3 $4) RETURNING *';
       const values = [email, username, password];
       const result = await pool.query(query, values);
       res.send(result.rows[0]);

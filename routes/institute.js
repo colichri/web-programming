@@ -1,54 +1,74 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
-const { Pool } = require('pg');
+const { Client } = require('pg');
 const bodyParser = require('body-parser');
+const DATABASE_URL="postgres://miacqskbeyafwb:d7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4@ec2-34-242-199-141.eu-west-1.compute.amazonaws.com:5432/d967mmgnsklhd0";
 
-// POST method to add institutes
-router.post('/',bodyParser.json(), async (req, res) => {
+// Establishing a connection
+const connectToClient = async () => {
     try {
-        const { name, password, address } = req.body;
-        const query = 'INSERT INTO institutes (name, password, address) VALUES ($1, $2, $3) RETURNING *';
-        const values = [name, password, address];
-        const result = await pool.query(query, values);
-        res.send(result.rows[0]);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send('Server error');
+      console.log(DATABASE_URL);
+      const client = new Client({
+        connectionString: DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      });
+      await client.connect();
+      return client;
+    } catch (error) {
+      console.error('Error connecting to institutedatabase:', error);
     }
-});
+  };
+// GET instituteuser by id
+  router.route('/:id')
+  .get(async (req, res) => {
+    const { id } = req.params;
 
-// GET method to get institute by id
-router.get('/', async (req, res) => {
     try {
-        const query = 'SELECT * FROM institutes WHERE id = $1';
-        const values = [req.params.id];
-        const result = await pool.query(query, values);
-        if (result.rows.length === 0) {
-            return res.status(404).send('Institute not found');
-        }
-        res.send(result.rows[0]);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send('Server error');
+      const client = await connectToClient();
+      const query = 'SELECT * FROM institutesuser WHERE instituteid = $1';
+      const values = [id];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error retrieving user from database');
     }
-});
+  })
 
 //PUT method to update institute by id
-router.put('/',bodyParser.json(), async (req, res) => {
+.put(bodyParser.json(), async (req, res) => {
+    const { id } = req.params;
+    const { email, username, password } = req.body;
+
     try {
-        const { name, password, address } = req.body;
-        const id = req.params.id;
-        const client = await pool.connect();
-        const result = await client.query('UPDATE institutes SET name=$1, password=$2, address=$3 WHERE id=$4 RETURNING *', [name, password, address, id]);
-        const updatedInstitute = result.rows[0];
-        res.json(updatedInstitute);
-        client.release();
-    } catch (e) {
-        console.log(e);
-        res.status(500).send('Server error');
+      const client = await connectToClient();
+      const query = 'UPDATE institutesuser SET email = $1, username = $2, password = $3 WHERE instituteid = $4 RETURNING *';
+      const values = [email, username, password, id];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error updating user in the database');
     }
-});
+  })
+
+.delete(bodyParser.json(), async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const client = await connectToClient();
+      const query = 'DELETE FROM institutesuser WHERE instituteid = $1 RETURNING *';
+      const values = [id];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error deleting instituteusers from the database');
+    }
+  });
 
 module.exports = router;
 

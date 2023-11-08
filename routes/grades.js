@@ -19,7 +19,7 @@ const connectToClient = async () => {
       await client.connect();
       return client;
     } catch (error) {
-      console.error('Error connecting to database:', error);
+      console.error('Error connecting to gradedatabase:', error);
     }
   };
 
@@ -36,59 +36,76 @@ router.get('/:userId/', async (req, res) => {
         console.error(err);
         res.status(500).send('Internal server error, your grades couldnt be read out');
     }
-});
+    })
 
 // Define a POST endpoint to add a new grade to the database
-router.post('/',bodyParser.json(), async (req, res) => {
+
+    .post(bodyParser.json(), async (req, res, next) => {
     try {
-        // Get the grade from the request body
-        const { grade } = req.body;
-
-        // Insert the grade into the database
-        await pool.query('INSERT INTO grades (grade) VALUES ($1)', [grade]);
-
-        // Send a response with the updated grades array
-        const result = await pool.query('SELECT * FROM grades');
-        res.send(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Internal server error');
+      const { grade = "", fach = "" } = req.body;
+      const { userid } = req.params; // Assuming userid is present in request parameters
+  
+      await client.query(
+        "INSERT INTO grades (userid, grade, fach) VALUES ($1, $2, $3)",
+        [userid, grade, fach]
+      );
+  
+      // Return a success message
+      res.send("Grade entered successfully");
+    } catch (error) {
+      next(error);
     }
-});
+    })
 
 // Define a PUT endpoint to update a grade in the database
-router.put('/:id',bodyParser.json(), async (req, res) => {
+
+    .put(bodyParser.json(), async (req, res) => {
+    const { id } = req.params;
+    const { grade = "", fach = "" } = req.body;
+
     try {
-        // Get the ID and new grade from the request parameters and body
-        const { id } = req.params;
-        const { grade } = req.body;
-
-        // Update the grade in the database
-        await pool.query('UPDATE grades SET grade = $1 WHERE id = $2', [grade, id]);
-
-        // Send a response with the updated grades array
-        const result = await pool.query('SELECT * FROM grades');
-        res.send(result.rows);
+      const client = await connectToClient();
+      const query = 'UPDATE grades SET grade = $1, fach = $2 WHERE userid = $3 RETURNING *';
+      const values = [grade, fach, id];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Internal server error');
+      console.error(err);
+      res.status(500).send('Error updating user grades in the database');
+    }
+    })
+
+// Define a DELETE endpoint to delete a all grades from a user from the database
+
+.delete(bodyParser.json(), async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const client = await connectToClient();
+      const query = 'DELETE FROM grades WHERE userid = $1 RETURNING *';
+      const values = [id];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error deleting user from the database');
+    }
+  })
+
+  .delete("/:gradeid", bodyParser.json(), async (req, res) => {
+    const { gradeid } = req.params;
+
+    try {
+      const client = await connectToClient();
+      const query = 'DELETE FROM grades WHERE gradeid = $1 RETURNING *';
+      const values = [gradeid];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error deleting specific grade from the database');
     }
 });
-// Define a DELETE endpoint to delete a grade from the database
-router.delete('/:id',bodyParser.json(), async (req, res) => {
-    try {
-        // Get the ID of the grade to delete from the request parameters
-        const { id } = req.params;
 
-        // Delete the grade from the database
-        await pool.query('DELETE FROM grades WHERE id = $1', [id]);
 
-        // Send a response with the updated grades array
-        const result = await pool.query('SELECT * FROM grades');
-        res.send(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Internal server error');
-    }
-});
 module.exports = router;

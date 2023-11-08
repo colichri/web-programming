@@ -18,7 +18,7 @@ const connectToClient = async () => {
       await client.connect();
       return client;
     } catch (error) {
-      console.error('Error connecting to database:', error);
+      console.error('Error connecting to institutedatabase:', error);
     }
   };
 // GET instituteuser by id

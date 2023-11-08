@@ -40,7 +40,7 @@ router.get('/:userId/', async (req, res) => {
 
 // Define a POST endpoint to add a new grade to the database
 
-.post(bodyParser.json(), async (req, res, next) => {
+.post('/:userId/',bodyParser.json(), async (req, res, next) => {
     try {
       const { userid } = req.params;
       console.log("userid", userid);

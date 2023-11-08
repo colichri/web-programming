@@ -3,6 +3,7 @@ const app = express();
 const router = express.Router();
 const { Pool } = require('pg');
 const bodyParser = require('body-parser');
+const DATABASE_URL="postgres://miacqskbeyafwb:d7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4@ec2-34-242-199-141.eu-west-1.compute.amazonaws.com:5432/d967mmgnsklhd0";
 
 // POST method to add institutes
 router.post('/',bodyParser.json(), async (req, res) => {

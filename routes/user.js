@@ -37,6 +37,37 @@ router.route('/:id')
       console.error(err);
       res.status(500).send('Error retrieving user from database');
     }
-  });
+  })
 
+  .put(bodyParser.json(), async (req, res) => {
+    const { id } = req.params;
+    const { email, username, password } = req.body;
+
+    try {
+      const client = await connectToClient();
+      const query = 'UPDATE users SET email = $1, username = $2, password = $3 WHERE userid = $4 RETURNING *';
+      const values = [email, username, password, id];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error updating user in the database');
+    }
+  })
+
+  .delete(bodyParser.json(), async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const client = await connectToClient();
+      const query = 'DELETE FROM users WHERE userid = $1 RETURNING *';
+      const values = [id];
+      const result = await client.query(query, values);
+      res.send(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error deleting user from the database');
+    }
+  });
+  
 module.exports = router;

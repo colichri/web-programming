@@ -114,7 +114,7 @@ router.route("/registerinstitute").post(bodyParser.json(), async (req, res, next
 
     // Otherwise, insert the new user into the database
     await client.query(
-      "INSERT INTO institutesuser (email, institutesuser, password) VALUES ($1, $2, $3)",
+      "INSERT INTO institutesuser (email, username, password) VALUES ($1, $2, $3)",
       [email, institutesuser, password]
     );
 

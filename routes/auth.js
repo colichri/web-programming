@@ -10,20 +10,19 @@ router.get("/", (req, res) => {
   res.send("Get method klappt als routing");
 });
 
+console.log(DATABASE_URL);
+const client = new Client({
+  connectionString: DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+await client.connect();
+
 // login user
 router.route("/").post(bodyParser.json(), async (req, res, next) => {
   try {
     const { email = "", password = "" } = req.body;
-    const { expiresInMins = 60 } = req.body;
-
-    console.log(DATABASE_URL);
-    const client = new Client({
-      connectionString: DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    });
-    await client.connect();
 
 
     // Query the database for the user's login information
@@ -58,14 +57,7 @@ router.route("/").post(bodyParser.json(), async (req, res, next) => {
 router.route("/registeruser").post(bodyParser.json(), async (req, res, next) => {
   try {
     const { email = "", username = "", password = "" } = req.body;
-    console.log(DATABASE_URL);
-    const client = new Client({
-      connectionString: DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    });
-    await client.connect();
+
 
     // Check if the user already exists
     const { rows } = await client.query("SELECT * FROM users WHERE email = $1", [

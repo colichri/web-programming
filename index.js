@@ -10,11 +10,11 @@ const instituteRoute = require('./routes/institute');
 const userRoute = require('./routes/user');
 
 
-const DATABASE_URL="postgres://kueqgryutxmqdf:45e8ee86568f6bb2b4067d3d939b068f5fc4611aaa9b2c6aea1308a39be0d24d@ec2-34-233-242-44.compute-1.amazonaws.com:5432/d3g0abr6n7fbko"
+const DATABASE_URL="postgres://miacqskbeyafwb:d7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4@ec2-34-242-199-141.eu-west-1.compute.amazonaws.com:5432/d967mmgnsklhd0"
 // Create a new connection pool
 console.log("connectionString: " + DATABASE_URL); // Check the value of connectionString
 const pgpool = new Pool({
-  DATABASE_URL,
+  connectionString: DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -54,5 +54,5 @@ app.get("/db", async (req, res) => {
 });
 
 module.exports = {
-    pgpool, // Export the pgpool to be used in other files
+    pgpool // Export the pgpool to be used in other files
 };

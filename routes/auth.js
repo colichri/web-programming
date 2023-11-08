@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const { pgpool } = require("../index"); 
-
-
+const { pgpool } = require("../index.js");
 
 //Testing the connection
 router.get("/", (req, res) => {
@@ -41,7 +39,6 @@ router.route("/").post(bodyParser.json(), async (req, res, next) => {
     next(error);
   }
 });
-
 
 // register user
 router.route("/register").post(bodyParser.json(), async (req, res, next) => {

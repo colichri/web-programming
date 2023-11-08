@@ -5,14 +5,6 @@ const router = express.Router();
 const app = express();
 const bodyParser = require('body-parser');
 
-// Create a new pool to connect to the database
-const pool = new Pool({
-    user: 'miacqskbeyafwb',
-    host: 'ec2-34-242-199-141.eu-west-1.compute.amazonaws.com',
-    database: 'd967mmgnsklhd0',
-    password: 'd7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4',
-    port: 5432,
-});
 
 // Define a GET endpoint to retrieve all grades from the database
 router.get('/', async (req, res) => {

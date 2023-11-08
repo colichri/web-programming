@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const { pgpool } = require("../index.js");
+const { Client } = require('pg');
+const { DATABASE_URL } = require("../index.js")
+
 
 //Testing the connection
 router.get("/", (req, res) => {
@@ -14,12 +16,24 @@ router.route("/").post(bodyParser.json(), async (req, res, next) => {
     const { email = "", password = "" } = req.body;
     const { expiresInMins = 60 } = req.body;
 
+
+    const client = new Client({
+      connectionString: DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
+    await client.connect();
+
+
     // Query the database for the user's login information
-    console.log("email", email, "password", password, pgpool);
-    const { rows } = await pgpool.query(
+    console.log("email", email, "password", password);
+    const { rows } = await client.query(
       "SELECT * FROM users WHERE email = $1 AND password = $2",
       [email, password]
     );
+
+    await client.end();
 
     // If the user is not found, return an error
     if (rows.length === 0) {
@@ -45,8 +59,16 @@ router.route("/register").post(bodyParser.json(), async (req, res, next) => {
   try {
     const { email = "", username = "", password = "" } = req.body;
 
+    const client = new Client({
+      connectionString: DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
+    await client.connect();
+
     // Check if the user already exists
-    const { rows } = await pgpool.query("SELECT * FROM users WHERE email = $1", [
+    const { rows } = await client.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
 
@@ -56,7 +78,7 @@ router.route("/register").post(bodyParser.json(), async (req, res, next) => {
     }
 
     // Otherwise, insert the new user into the database
-    await pgpool.query(
+    await client.query(
       "INSERT INTO users (email, username, password) VALUES ($1, $2, $3)",
       [email, username, password]
     );

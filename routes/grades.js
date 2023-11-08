@@ -40,22 +40,26 @@ router.get('/:userId/', async (req, res) => {
 
 // Define a POST endpoint to add a new grade to the database
 
-    .post(bodyParser.json(), async (req, res, next) => {
+.post(bodyParser.json(), async (req, res, next) => {
     try {
+      const { userid } = req.params;
+      console.log("userid", userid);
       const { grade = "", fach = "" } = req.body;
-      const { userid } = req.params; // Assuming userid is present in request parameters
-  
+    
+      console.log("Request Body:", req.body); // Logging the request body to check the contents
+    
       await client.query(
         "INSERT INTO grades (userid, grade, fach) VALUES ($1, $2, $3)",
         [userid, grade, fach]
       );
-  
+    
       // Return a success message
       res.send("Grade entered successfully");
     } catch (error) {
       next(error);
     }
-    })
+  })
+  
 
 // Define a PUT endpoint to update a grade in the database
 

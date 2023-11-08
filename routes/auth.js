@@ -55,7 +55,7 @@ router.route("/").post(bodyParser.json(), async (req, res, next) => {
 });
 
 // register user
-router.route("/register").post(bodyParser.json(), async (req, res, next) => {
+router.route("/registeruser").post(bodyParser.json(), async (req, res, next) => {
   try {
     const { email = "", username = "", password = "" } = req.body;
     console.log(DATABASE_URL);
@@ -85,6 +85,41 @@ router.route("/register").post(bodyParser.json(), async (req, res, next) => {
 
     // Return a success message
     res.send("User registered successfully");
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.route("/registerinstitute").post(bodyParser.json(), async (req, res, next) => {
+  try {
+    const { email = "", institutesuser = "", password = "" } = req.body;
+    console.log(DATABASE_URL);
+    const client = new Client({
+      connectionString: DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
+    await client.connect();
+
+    // Check if the user already exists
+    const { rows } = await client.query("SELECT * FROM institutesuser WHERE email = $1", [
+      email,
+    ]);
+
+    // If the user already exists, return an error
+    if (rows.length > 0) {
+      return res.status(409).send("Institutesuser already exists");
+    }
+
+    // Otherwise, insert the new user into the database
+    await client.query(
+      "INSERT INTO institutesuser (email, institutesuser, password) VALUES ($1, $2, $3)",
+      [email, institutesuser, password]
+    );
+
+    // Return a success message
+    res.send("Institutesuser registered successfully");
   } catch (error) {
     next(error);
   }

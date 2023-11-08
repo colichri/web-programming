@@ -1,102 +1,94 @@
 const { Client } = require('pg');
 const express = require('express');
 const router = express.Router();
+const app = express();
 const bodyParser = require('body-parser');
+const DATABASE_URL = "postgres://miacqskbeyafwb:d7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4@ec2-34-242-199-141.eu-west-1.compute.amazonaws.com:5432/d967mmgnsklhd0";
 
-// Your PostgreSQL database connection string
-const DATABASE_URL = "your_postgres_database_url_here";
 
 // Establishing a connection
 const connectToClient = async () => {
-  try {
-    const client = new Client({
-      connectionString: DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    });
-    await client.connect();
-    return client;
-  } catch (error) {
-    console.error('Error connecting to database:', error);
-  }
+    try {
+        const client = new Client({
+            connectionString: DATABASE_URL,
+            ssl: {
+                rejectUnauthorized: false,
+            },
+        });
+        await client.connect();
+        return client;
+    } catch (error) {
+        console.error('Error connecting to database:', error);
+    }
 };
 
-// GET endpoint to retrieve all grades for a specific user
+// GET endpoint to retrieve all grades for a user from the database
 router.get('/:userId', async (req, res) => {
-  try {
     const { userId } = req.params;
-    const client = await connectToClient();
 
-    const query = 'SELECT * FROM grades WHERE userid = $1';
-    const values = [userId];
-    const result = await client.query(query, values);
-
-    res.send(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error retrieving grades for the user');
-  }
-});
-
-// POST endpoint to add a new grade for a user
-router.post('/:userId', bodyParser.json(), async (req, res, next) => {
-  try {
-    const { userId } = req.params;
-    const { grade = "", subject = "" } = req.body;
-    const client = await connectToClient();
-
-    // Check for duplicate grade before insertion
-    const checkQuery = 'SELECT * FROM grades WHERE userid = $1 AND grade = $2 AND subject = $3';
-    const checkValues = [userId, grade, subject];
-    const checkResult = await client.query(checkQuery, checkValues);
-
-    if (checkResult.rows.length > 0) {
-      return res.send("Duplicate grade. It already exists for this user.");
+    try {
+        const client = await connectToClient();
+        const query = 'SELECT * FROM grades WHERE userid = $1';
+        const values = [userId];
+        const result = await client.query(query, values);
+        res.send(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal server error. Grades could not be retrieved.');
     }
-
-    const insertQuery = 'INSERT INTO grades (userid, grade, subject) VALUES ($1, $2, $3)';
-    const insertValues = [userId, grade, subject];
-    await client.query(insertQuery, insertValues);
-
-    res.send("Grade entered successfully");
-  } catch (error) {
-    next(error);
-  }
 });
 
-// DELETE endpoint to delete a specific grade for a user
-router.delete('/:gradeId', async (req, res) => {
-  try {
-    const { gradeId } = req.params;
-    const client = await connectToClient();
+// POST endpoint to add a new grade for a user to the database
+router.post('/:userId', bodyParser.json(), async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const { grade: rawGrade = "", subjects: rawSubjects = "" } = req.body;
+        
+        // Check if rawGrade is in the format of 'x,y' and convert it to a valid number format
+        const gradeValue = parseFloat(rawGrade.replace(',', '.'));
 
-    const query = 'DELETE FROM grades WHERE gradeid = $1';
-    const values = [gradeId];
-    await client.query(query, values);
+        const client = await connectToClient();
+        const query = 'INSERT INTO grades (userid, grade, subjects) VALUES ($1, $2, $3)';
+        const values = [userId, gradeValue, rawSubjects];
+        await client.query(query, values);
 
-    res.send("Grade deleted successfully");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error deleting the grade');
-  }
+        res.send('Grade entered successfully');
+    } catch (error) {
+        next(error);
+    }
 });
 
-// DELETE endpoint to delete all grades for a user
-router.delete('/all/:userId', async (req, res) => {
-  try {
+
+// DELETE endpoint to delete all grades for a user from the database
+router.delete('/:userId', async (req, res) => {
     const { userId } = req.params;
-    const client = await connectToClient();
 
-    const query = 'DELETE FROM grades WHERE userid = $1';
-    const values = [userId];
-    await client.query(query, values);
+    try {
+        const client = await connectToClient();
+        const query = 'DELETE FROM grades WHERE userid = $1';
+        const values = [userId];
+        await client.query(query, values);
+        res.send('Grades deleted successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error deleting grades from the database');
+    }
+});
 
-    res.send("All grades for the user deleted successfully");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error deleting all grades for the user');
-  }
+// DELETE endpoint to delete a specific grade from the database
+router.delete('/:gradesid', async (req, res) => {
+    const { gradesid } = req.params;
+
+    try {
+        const client = await connectToClient();
+        const query = 'DELETE FROM grades WHERE gradesid = $1';
+        const values = [gradesid];
+        await client.query(query, values);
+        res.send('Grade deleted successfully');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error deleting grade from the database');
+    }
 });
 
 module.exports = router;

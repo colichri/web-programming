@@ -37,15 +37,10 @@ app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 app.get("/db", async (req, res) => {
     try {
       console.log(pgpool);
-      console.log("0");
         const client = await pgpool.connect()
-        console.log("1");
         const result = await client.query("SELECT * FROM user");
-        console.log("2");
         const results = { results: result ? result.rows : null };
-        console.log("3");
         res.send(results);
-        console.log("4");
         client.release();
     } catch (err) {
         console.error(err);

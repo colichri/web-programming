@@ -1,14 +1,20 @@
 const express = require("express");
 const app = express();
+const DATABASE_URL="postgres://miacqskbeyafwb:d7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4@ec2-34-242-199-141.eu-west-1.compute.amazonaws.com:5432/d967mmgnsklhd0";
+// const { Client } = require("pg");
 const path = require("path");
-const { Pool } = require("pg");
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+const authRoute = require('./routes/auth');
+const gradesRoute = require('./routes/grades');
+const instituteRoute = require('./routes/institute');
+const userRoute = require('./routes/user');
+
+
+
+app.use('/auth', authRoute);
+app.use('/grades', gradesRoute);
+app.use('/institute', instituteRoute);
+app.use('/user', userRoute);
 
 const PORT = process.env.PORT || 5001;
 
@@ -17,24 +23,6 @@ app.get("/", (req, res) =>
 );
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-function showTimes() {
-  const times = process.env.TIMES || 5;
-  let result = "";
-  for (i = 0; i < times; i++) {
-    result += i + " ";
-  }
-  return result;
-}
-
-app.get("/db", async (req, res) => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query("SELECT * FROM test_table");
-    const results = { results: result ? result.rows : null };
-    res.render("pages/db", results);
-    client.release();
-  } catch (err) {
-    console.error(err);
-    res.send("Error " + err);
-  }
-});
+module.exports = {
+    DATABASE_URL, // Export the DATABASE_URL to be used in other files
+};

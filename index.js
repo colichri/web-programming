@@ -5,7 +5,6 @@ const DATABASE_URL="postgres://miacqskbeyafwb:d7036d55422fa5330f1a78999dc85500b8
 const path = require("path");
 
 const authRoute = require('./routes/auth');
-const avgRoute = require('./routes/avg');
 const gradesRoute = require('./routes/grades');
 const instituteRoute = require('./routes/institute');
 const userRoute = require('./routes/user');
@@ -13,7 +12,6 @@ const userRoute = require('./routes/user');
 
 
 app.use('/auth', authRoute);
-app.use('/avg', avgRoute);
 app.use('/grades', gradesRoute);
 app.use('/institute', instituteRoute);
 app.use('/user', userRoute);

@@ -22,6 +22,21 @@ const connectToClient = async () => {
     }
 };
 
+
+// Calculate the average of all grades for a specific user
+const calculateAverageGrade = async (userId) => {
+    try {
+        const client = await connectToClient();
+        const query = 'SELECT AVG(grade) FROM grades WHERE userid = $1';
+        const values = [userId];
+        const result = await client.query(query, values);
+        return result.rows[0].avg;
+    } catch (error) {
+        console.error('Error calculating average grade:', error);
+        return null;
+    }
+};
+
 // GET endpoint to retrieve all grades for a user from the database
 router.get('/:userId', async (req, res) => {
     const { userId } = req.params;
@@ -88,6 +103,16 @@ router.delete('/:gradesid', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Error deleting grade from the database');
+    }
+});
+
+router.get('/average/:userId', async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const average = await calculateAverageGrade(userId);
+        res.json({ average });
+    } catch (error) {
+        next(error);
     }
 });
 

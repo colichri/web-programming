@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const DATABASE_URL="postgres://miacqskbeyafwb:d7036d55422fa5330f1a78999dc85500b8e57b5611226416b9329639579fabe4@ec2-34-242-199-141.eu-west-1.compute.amazonaws.com:5432/d967mmgnsklhd0";
+const DATABASE_URL="postgres://mwsvxbtyequwmi:cc2192e32e5507ee2f6821d5ad153d604febbdf3a78b552dd4a59bfda2fdad2e@ec2-3-233-77-220.compute-1.amazonaws.com:5432/d8ic32b6u6g5cs";
 // const { Client } = require("pg");
 const path = require("path");
 

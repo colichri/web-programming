@@ -24,7 +24,8 @@ const connectToClient = async () => {
   };
 
 // Define a GET endpoint to retrieve all grades from the database
-router.get('/:userId/', async (req, res) => {
+router.route('/:userId/')
+.get( async (req, res) => {
     const { userId } = req.params;
 
     try {
@@ -40,25 +41,26 @@ router.get('/:userId/', async (req, res) => {
 
 // Define a POST endpoint to add a new grade to the database
 
-.post('/:userId/',bodyParser.json(), async (req, res, next) => {
+.post( bodyParser.json(), async (req, res, next) => {
     try {
-      const { userid } = req.params;
-      console.log("userid", userid);
-      const { grade = "", fach = "" } = req.body;
-    
-      console.log("Request Body:", req.body); // Logging the request body to check the contents
-    
-      await client.query(
-        "INSERT INTO grades (userid, grade, fach) VALUES ($1, $2, $3)",
-        [userid, grade, fach]
-      );
-    
-      // Return a success message
-      res.send("Grade entered successfully");
+        const { userId } = req.params;
+        console.log("userId", userId);
+        const { grade = "", fach = "" } = req.body;
+
+        console.log("Request Body:", req.body); // Logging the request body to check the contents
+
+        await client.query(
+            "INSERT INTO grades (userid, grade, fach) VALUES ($1, $2, $3)",
+            [userId, grade, fach]
+        );
+
+        // Return a success message
+        res.send("Grade entered successfully");
     } catch (error) {
-      next(error);
+        next(error);
     }
-  })
+})
+
   
 
 // Define a PUT endpoint to update a grade in the database
@@ -96,7 +98,7 @@ router.get('/:userId/', async (req, res) => {
     }
   })
 
-  .delete("/:gradeid", bodyParser.json(), async (req, res) => {
+  .delete(bodyParser.json(), async (req, res) => {
     const { gradeid } = req.params;
 
     try {

@@ -38,7 +38,7 @@ app.get("/db", async (req, res) => {
     try {
       console.log(pgpool);
       console.log("0");
-        const client = await pgpool.connect();
+        const client = await pgpool.connect()
         console.log("1");
         const result = await client.query("SELECT * FROM user");
         console.log("2");

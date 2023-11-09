@@ -8,6 +8,7 @@ const authRoute = require('./routes/auth');
 const gradesRoute = require('./routes/grades');
 const instituteRoute = require('./routes/institute');
 const userRoute = require('./routes/user');
+const addressRoute = require('./routes/address');
 
 
 
@@ -15,6 +16,7 @@ app.use('/auth', authRoute);
 app.use('/grades', gradesRoute);
 app.use('/institute', instituteRoute);
 app.use('/user', userRoute);
+app.use('/address', addressRoute);
 
 const PORT = process.env.PORT || 5001;
 

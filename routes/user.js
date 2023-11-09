@@ -22,6 +22,8 @@ const connectToClient = async () => {
   }
 };
 
+
+
 // GET user by id
 router.route('/:id')
   .get(async (req, res) => {

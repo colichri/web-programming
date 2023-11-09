@@ -11,7 +11,6 @@ const userRoute = require('./routes/user');
 const addressRoute = require('./routes/address');
 
 
-
 app.use('/auth', authRoute);
 app.use('/grades', gradesRoute);
 app.use('/institute', instituteRoute);

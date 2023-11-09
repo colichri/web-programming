@@ -57,14 +57,14 @@ router.get('/:userId', async (req, res) => {
 router.post('/:userId', bodyParser.json(), async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const { grade: rawGrade = "", subjects: rawSubjects = "" } = req.body;
+        const { grade: rawGrade = "", subjects: rawSubjects = "" , weight=""} = req.body;
         
         // Check if rawGrade is in the format of 'x,y' and convert it to a valid number format
         const gradeValue = parseFloat(rawGrade.replace(',', '.'));
 
         const client = await connectToClient();
-        const query = 'INSERT INTO grades (userid, grade, subjects) VALUES ($1, $2, $3)';
-        const values = [userId, gradeValue, rawSubjects];
+        const query = 'INSERT INTO grades (userid, grade, subjects, weight) VALUES ($1, $2, $3, $4)';
+        const values = [userId, gradeValue, rawSubjects, weight];
         await client.query(query, values);
 
         res.send('Grade entered successfully');
@@ -114,7 +114,7 @@ router.get('/average/:userId', async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-})
+});
 
 router.get('/:userId/weighted-average', async (req, res, next) => {
     try {
@@ -132,34 +132,5 @@ router.get('/:userId/weighted-average', async (req, res, next) => {
     }
 });
 
-
-/* ('/:userId/weighted-average', async (req, res, next) => {
-    try {
-        const { userId } = req.params;
-
-        // Fetch all grades for the user from the database
-        const query = 'SELECT grade, weight FROM grades WHERE userid = $1';
-        const values = [userId];
-        const result = await client.query(query, values);
-
-        const grades = result.rows.map(row => row.grade);
-        const weights = result.rows.map(row => row.weight);
-
-        // Calculate the weighted average
-        let weightedSum = 0;
-        let weightSum = 0;
-
-        for (let i = 0; i < grades.length; i++) {
-            weightedSum += grades[i] * weights[i];
-            weightSum += weights[i];
-        }
-
-        const weightedAverage = weightedSum / weightSum;
-
-        res.send(`Weighted Average for User ${userId}: ${weightedAverage}`);
-    } catch (error) {
-        next(error);
-    }
-}); */
 
 module.exports = router;

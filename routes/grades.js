@@ -57,14 +57,14 @@ router.get('/:userId', async (req, res) => {
 router.post('/:userId', bodyParser.json(), async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const { grade: rawGrade = "", subjects: rawSubjects = "" } = req.body;
+        const { grade: rawGrade = "", subjects: rawSubjects = "" , weight=""} = req.body;
         
         // Check if rawGrade is in the format of 'x,y' and convert it to a valid number format
         const gradeValue = parseFloat(rawGrade.replace(',', '.'));
 
         const client = await connectToClient();
-        const query = 'INSERT INTO grades (userid, grade, subjects) VALUES ($1, $2, $3)';
-        const values = [userId, gradeValue, rawSubjects];
+        const query = 'INSERT INTO grades (userid, grade, subjects, weight) VALUES ($1, $2, $3, $4)';
+        const values = [userId, gradeValue, rawSubjects, weight];
         await client.query(query, values);
 
         res.send('Grade entered successfully');
@@ -115,5 +115,22 @@ router.get('/average/:userId', async (req, res, next) => {
         next(error);
     }
 });
+
+router.get('/:userId/weighted-average', async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        const client = await connectToClient();
+        const query = 'SELECT SUM(grade * weight) / SUM(weight) AS weighted_average FROM grades WHERE userid = $1';
+        const values = [userId];
+        const result = await client.query(query, values);
+        const weightedAverage = result.rows[0].weighted_average;
+        
+        res.send(`Weighted Average for User ID ${userId}: ${weightedAverage}`);
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 module.exports = router;

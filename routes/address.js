@@ -26,7 +26,7 @@ router.get('/:userId', async (req, res, next) => {
         const { userId } = req.params;
         const client = await connectToClient();
 
-        const query = 'SELECT * FROM address WHERE userid = $1';
+        const query = 'SELECT * FROM addresses WHERE userid = $1';
         const values = [userId];
         const result = await client.query(query, values);
 

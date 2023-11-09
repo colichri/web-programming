@@ -80,14 +80,14 @@ const connectToClient = async () => {
 router.post('/:userId/grades', bodyParser.json(), async (req, res, next) => {
   try {
       const { userId } = req.params;
-      const { rawGrade, subject, weight } = req.body;
+      const { rawGrade, subjects, weight } = req.body;
 
       // Check if rawGrade is in the format of 'x,y' and convert it to a valid number format
       const gradeValue = parseFloat(rawGrade.replace(',', '.'));
 
       const client = await connectToClient();
       const query = 'INSERT INTO grades (userid, grade, subjects, weight) VALUES ($1, $2, $3, $4)';
-      const values = [userId, gradeValue, subject, weight];
+      const values = [userId, gradeValue, subjects, weight];
       await client.query(query, values);
 
       res.send('Grade added successfully');
@@ -100,14 +100,14 @@ router.post('/:userId/grades', bodyParser.json(), async (req, res, next) => {
 router.put('/:userId/grades/:gradeId', bodyParser.json(), async (req, res, next) => {
   try {
       const { userId, gradeId } = req.params;
-      const { rawGrade, subject, weight } = req.body;
+      const { rawGrade, subjects, weight } = req.body;
 
       // Check if rawGrade is in the format of 'x,y' and convert it to a valid number format
       const gradeValue = parseFloat(rawGrade.replace(',', '.'));
 
       const client = await connectToClient();
       const query = 'UPDATE grades SET grade = $1, subjects = $2, weight = $3 WHERE userid = $4 AND gradesid = $5';
-      const values = [gradeValue, subject, weight, userId, gradeId];
+      const values = [gradeValue, subjects, weight, userId, gradeId];
       await client.query(query, values);
 
       res.send('Grade updated successfully');

@@ -114,6 +114,52 @@ router.get('/average/:userId', async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+})
+
+router.get('/:userId/weighted-average', async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        const client = await connectToClient();
+        const query = 'SELECT SUM(grade * weight) / SUM(weight) AS weighted_average FROM grades WHERE userid = $1';
+        const values = [userId];
+        const result = await client.query(query, values);
+        const weightedAverage = result.rows[0].weighted_average;
+        
+        res.send(`Weighted Average for User ID ${userId}: ${weightedAverage}`);
+    } catch (error) {
+        next(error);
+    }
 });
+
+
+/* ('/:userId/weighted-average', async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        // Fetch all grades for the user from the database
+        const query = 'SELECT grade, weight FROM grades WHERE userid = $1';
+        const values = [userId];
+        const result = await client.query(query, values);
+
+        const grades = result.rows.map(row => row.grade);
+        const weights = result.rows.map(row => row.weight);
+
+        // Calculate the weighted average
+        let weightedSum = 0;
+        let weightSum = 0;
+
+        for (let i = 0; i < grades.length; i++) {
+            weightedSum += grades[i] * weights[i];
+            weightSum += weights[i];
+        }
+
+        const weightedAverage = weightedSum / weightSum;
+
+        res.send(`Weighted Average for User ${userId}: ${weightedAverage}`);
+    } catch (error) {
+        next(error);
+    }
+}); */
 
 module.exports = router;
